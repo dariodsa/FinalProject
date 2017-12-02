@@ -3,3 +3,7 @@ ghc:
   - "7.10"
   - "7.8"
   - "7.6"
+install:
+  - cabal build
+script: 
+  - .\dist\build\FinalProject\FinalProject.exe
