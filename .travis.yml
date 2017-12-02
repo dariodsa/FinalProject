@@ -6,4 +6,4 @@ ghc:
 install:
   - cabal build
 script: 
-  - dist/build/FinalProject/FinalProject.exe
+  - runhaskell src/Main.hs
