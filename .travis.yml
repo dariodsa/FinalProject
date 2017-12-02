@@ -6,4 +6,4 @@ ghc:
 install:
   - cabal build
 script: 
-  - .\dist\build\FinalProject\FinalProject.exe
+  - dist/build/FinalProject/FinalProject.exe
