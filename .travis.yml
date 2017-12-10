@@ -1,7 +1,13 @@
+sudo: true
 language: haskell
+git:
+  depth: 5
 ghc:
   - "8.0.2"
 install:
   - cabal build
 script: 
   - runhaskell src/Main.hs
+
+notifications:
+   email: false
