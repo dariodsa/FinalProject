@@ -5,11 +5,11 @@ module Information
               Result
             ) where
 
-data StructureType = Bucket | BBT deriving (Read)
+data StructureType = Bucket | BBT deriving (Read, Show, Ord, Eq)
                    
 data MoveType = BigMove 
               | MediumMove
-              | SmallMove deriving (Read)
+              | SmallMove deriving (Read, Show, Ord, Eq)
 
 data Result = Result {
                      structureType  :: StructureType,
