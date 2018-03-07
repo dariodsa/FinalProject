@@ -1,4 +1,10 @@
 module Main where
 
+import Input
+import Parser
+import Generator
+
 main :: IO ()
-main = putStrLn "Hello, Haskell! dsa"
+main = do 
+       input <- sayHello
+       if input == '1' then generateDots else parsingFile
