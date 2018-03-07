@@ -19,10 +19,12 @@ parsingFile = do
          return ()
 
 parseMe :: [String] -> [(Key, Value)]
-parseMe xs = (\acc x -> [getPair (splitOn "," x )] ++ acc) [] xs
+parseMe arr = foldl acc [] arr
+         where acc :: [(Key, Value)] -> String -> [(Key, Value)]
+               acc xs x = [getPair (splitOn "," x )] ++ xs
 
 getPair :: [String] -> (Key, Value)
-getPair xs = ( key, value) 
+getPair xs = ( key, value)        
         where key   = Key 
                        (read (xs !! 0) :: StructureType)
                        (read (xs !! 1) :: Int)
