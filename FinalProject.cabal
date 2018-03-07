@@ -14,7 +14,7 @@ maintainer:          dario.sindicic@gmail.com
 -- category:            
 build-type:          Simple
 extra-source-files:  ChangeLog.md, README.md
-cabal-version:       >=2.0
+cabal-version:       >=1.2
 
 executable FinalProject
   main-is:             Main.hs
