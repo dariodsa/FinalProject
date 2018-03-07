@@ -1,0 +1,9 @@
+{
+   structureType,
+   bucketSize,
+   numOfWorkers,   
+   moveType,
+   queryTime,
+   moveTime,
+   relocationTime
+}
