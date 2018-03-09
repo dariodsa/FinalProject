@@ -7,9 +7,9 @@ module Information
 
 data StructureType = Bucket | BBT deriving (Read, Show, Ord, Eq)
                    
-data MoveType = BigMove 
+data MoveType = SmallMove 
               | MediumMove
-              | SmallMove deriving (Read, Show, Ord, Eq)
+              | BigMove deriving (Read, Show, Ord, Eq)
 
 data Result = Result {
                      structureType  :: StructureType,

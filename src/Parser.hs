@@ -23,15 +23,13 @@ parsingFile = do
          fileLoc <- getLine
          putStrLn "fileLoc will be parsed."
          fileContent <- readFile fileLoc
-         putStrLn $ fileContent
          let xs = lines fileContent
-         putStrLn (xs !! 1)
          putStrLn $ printResults ( parseMe xs empty)
             
 printResults :: Map Key [Value] -> String
 printResults m = 
-                 show ( Prelude.foldl (\acc (key,value) ->
-                            show(show key ++ " => " 
+                 show (Prelude.foldl (\acc (key,value) ->
+                            acc ++ "\n" ++ show(show key ++ " => " 
                             ++ show (Prelude.foldl (
                                    \(Value acc1 acc2 acc3) (Value x1 x2 x3) -> 
                                     (
