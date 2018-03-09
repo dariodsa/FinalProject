@@ -8,13 +8,13 @@ import Data.Map
 data Key = Key StructureType Int Int MoveType deriving (Ord, Eq)
 data Value = Value Double Double Double
 
-showKey :: Key -> String
-showKey (Key structureType bucketSize numOfWorkers moveType) = 
+instance Show Key where 
+  show (Key structureType bucketSize numOfWorkers moveType) = 
             "(" ++ show structureType ++ ", " ++ show bucketSize ++ ", " ++ 
              show numOfWorkers ++ ", " ++ show moveType
 
-showRes :: (a, a, a) -> String
-showRes (x,y,z) = show x ++ " " ++ show y ++ " " ++ show z 
+instance Show Value where
+  show (Value x y z) = show x ++ " " ++ show y ++ " " ++ show z 
 
 parsingFile :: IO()
 parsingFile = do
@@ -29,12 +29,16 @@ parsingFile = do
 printResults :: Map Key [Value] -> String
 printResults m = 
                  show ( Prelude.foldl (\acc x ->
-                            show(showKey x ++ " => " 
-                            ++ showRes (Prelude.foldl (\(acc1,acc2,acc3) (x1,x2,x3) -> 
-                                     (acc1 + x1 / length (getJustValue ( Data.Map.lookup x m))
-                                     ,acc2 + x2 / length (getJustValue ( Data.Map.lookup x m))
-                                     ,acc3 + x3 / length (getJustValue ( Data.Map.lookup x m)))
-                                  ) (0.0,0.0,0.0) ( (Data.Map.lookup x m)))
+                            show(show x ++ " => " 
+                            ++ show (Prelude.foldl (
+                                   \(Value acc1 acc2 acc3) (Value x1 x2 x3) -> 
+                                    (
+                                      let len = fromIntegral(length (getJustValue (Data.Map.lookup x m)))
+                                      in Value 
+                                      (acc1 + x1 / len)
+                                      (acc2 + x2 / len)
+                                      (acc3 + x3 / len)
+                                  )) (Value 0.0 0.0 0.0)  (getJustValue(Data.Map.lookup x m)))
                             ++ "\n")
                          ) "" (Data.Map.keys m))
                                                  
