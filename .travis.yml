@@ -7,7 +7,7 @@ ghc:
 install:
   - cabal build
 script: 
-  - runhaskell src/Main.hs
+  - cabal build
 
 notifications:
    email: false

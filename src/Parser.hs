@@ -30,19 +30,19 @@ parsingFile = do
             
 printResults :: Map Key [Value] -> String
 printResults m = 
-                 show ( Data.Map.foldlWithKey (\acc key value ->
+                 show ( Prelude.foldl (\acc (key,value) ->
                             show(show key ++ " => " 
                             ++ show (Prelude.foldl (
                                    \(Value acc1 acc2 acc3) (Value x1 x2 x3) -> 
                                     (
-                                      let len = fromIntegral(length value)
-                                      in Value 
+                                      let len = fromIntegral $ length value
+                                      in Value                 
                                       (acc1 + x1 / len)
                                       (acc2 + x2 / len)
                                       (acc3 + x3 / len)
                                   )) (Value 0.0 0.0 0.0)  value)
                             )
-                         ) "" m)
+                         ) "" (toList m))
                                                  
 
 parseMe :: [String] -> Map Key [Value] -> Map Key [Value]
@@ -69,5 +69,4 @@ getPair xs = ( key, value)
                        (read (xs !! 6) :: Double)
 
 getJustValue :: Maybe a -> a
-getJustValue (Just x) = x
-                     
+getJustValue (Just x) = x                     
