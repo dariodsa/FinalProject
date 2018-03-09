@@ -28,7 +28,7 @@ parsingFile = do
             
 printResults :: Map Key [Value] -> String
 printResults m = 
-                 show (Prelude.foldl (\acc (key,value) ->
+                 Prelude.foldl (\acc (key,value) ->
                             acc ++ "\n" ++ show(show key ++ " => " 
                             ++ show (Prelude.foldl (
                                    \(Value acc1 acc2 acc3) (Value x1 x2 x3) -> 
@@ -40,7 +40,7 @@ printResults m =
                                       (acc3 + x3 / len)
                                   )) (Value 0.0 0.0 0.0)  value)
                             )
-                         ) "" (toList m))
+                         ) "" (toList m)
                                                  
 
 parseMe :: [String] -> Map Key [Value] -> Map Key [Value]
