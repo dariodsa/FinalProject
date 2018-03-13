@@ -2,11 +2,12 @@ module Parser where
 
 import Information
 
+import qualified Data.List as L
 import Data.List.Split
 import Data.Map
 
 data Key = Key StructureType Int Int MoveType deriving (Ord, Eq, Read)
-data Value = Value Double Double Double deriving (Read)
+data Value = Value Double Double Double deriving (Read, Ord, Eq)
 
 instance Show Key where 
   show (Key structureType bucketSize numOfWorkers moveType) = 
@@ -29,16 +30,18 @@ parsingFile = do
 printResults :: Map Key [Value] -> String
 printResults m = 
                  Prelude.foldl (\acc (key,value) ->
-                            acc ++ "\n" ++ show(show key ++ " => " 
+                            acc ++ "\n" 
+                            ++ show(show key ++ " => " 
                             ++ show (Prelude.foldl (
                                    \(Value acc1 acc2 acc3) (Value x1 x2 x3) -> 
                                     (
                                       let len = fromIntegral $ length value
                                       in Value                 
-                                      (acc1 + x1 / len)
-                                      (acc2 + x2 / len)
-                                      (acc3 + x3 / len)
-                                  )) (Value 0.0 0.0 0.0)  value)
+                                          (acc1 + x1 / len)
+                                          (acc2 + x2 / len)
+                                          (acc3 + x3 / len)
+                                    )
+                                    ) (Value 0.0 0.0 0.0)  (stat value))
                             )
                          ) "" (toList m)
                                                  
@@ -68,3 +71,8 @@ getPair xs = ( key, value)
 
 getJustValue :: Maybe a -> a
 getJustValue (Just x) = x                     
+
+stat :: (Ord a, Eq a) => [a] -> [a]
+stat arr = take len1 (L.reverse  (L.sort arrWB))
+        where len1 = length arr
+              arrWB = take len1 (L.sort arr)

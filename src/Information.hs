@@ -6,7 +6,6 @@ module Information
             ) where
 
 data StructureType = Bucket | BBT deriving (Read, Show, Ord, Eq)
-                   
 data MoveType = SmallMove 
               | MediumMove
               | BigMove deriving (Read, Show, Ord, Eq)
