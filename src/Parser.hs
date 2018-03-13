@@ -6,8 +6,22 @@ import qualified Data.List as L
 import Data.List.Split
 import Data.Map
 
-data Key = Key StructureType Int Int MoveType deriving (Ord, Eq, Read)
-data Value = Value Double Double Double deriving (Read, Ord, Eq)
+type QueryTime = Double
+type MoveTime = Double
+type RelocationTime = Double
+
+type NumOfWorker = Int
+type BucketSize = Int
+
+data Key = Key StructureType NumOfWorker BucketSize MoveType deriving (Ord, Eq, Read)
+data Value = Value { query :: QueryTime
+                   , move  :: MoveTime
+                   , reloc :: RelocationTime
+                   } deriving (Read, Eq)
+data Results = Results { querys :: [QueryTime]
+                       , moves  :: [MoveTime]
+                       , relocations :: [RelocationTime]
+                       } deriving (Read, Ord, Eq)
 
 instance Show Key where 
   show (Key structureType bucketSize numOfWorkers moveType) = 
@@ -25,54 +39,58 @@ parsingFile = do
          putStrLn "fileLoc will be parsed."
          fileContent <- readFile fileLoc
          let xs = lines fileContent
-         putStrLn $ printResults ( parseMe xs empty)
+         putStrLn $ printResults ( parseMe empty xs)
             
-printResults :: Map Key [Value] -> String
-printResults m = 
-                 Prelude.foldl (\acc (key,value) ->
-                            acc ++ "\n" 
-                            ++ show(show key ++ " => " 
-                            ++ show (Prelude.foldl (
-                                   \(Value acc1 acc2 acc3) (Value x1 x2 x3) -> 
-                                    (
-                                      let len = fromIntegral $ length value
-                                      in Value                 
-                                          (acc1 + x1 / len)
-                                          (acc2 + x2 / len)
-                                          (acc3 + x3 / len)
-                                    )
-                                    ) (Value 0.0 0.0 0.0)  (stat value))
-                            )
-                         ) "" (toList m)
+printResults :: Map Key Results -> String
+printResults m = Prelude.foldl f1 "" (toList m)
+             where f1 acc (key,value) =
+                            acc ++ "\n" ++ show key ++ " " ++ result
+                             where result = show queryRes ++ " " ++ show moveRes ++ " " ++ show relRes
+                                   queryRes = stat (querys value)
+                                   moveRes  = stat (moves value)
+                                   relRes   = stat (relocations value)
+                            
                                                  
 
-parseMe :: [String] -> Map Key [Value] -> Map Key [Value]
-parseMe arr m = Prelude.foldl acc empty arr
-         where acc :: Map Key [Value] -> String -> Map Key [Value] 
+parseMe :: Map Key Results -> [String] -> Map Key Results
+parseMe m = Prelude.foldl acc empty 
+         where acc :: Map Key Results -> String -> Map Key Results
                acc xs x = case member key xs of 
-                            True  -> update (\a -> Just (a ++ [value])) key xs
-                            False -> insert key [value] xs
+                            True  -> update (\a -> Just (Results 
+                                                                 (querys a ++ [que])
+                                                                 (moves a  ++ [mov])
+                                                                 (relocations a ++ [rel])
+                                                                 )) key xs
+                            False -> insert key (Results [que] [mov] [rel]) xs
                           where pair  = getPair $ splitOn " " x
                                 key   = fst pair
                                 value = snd pair
+                                que = query value
+                                mov  = move value
+                                rel = reloc value
 
 
 getPair :: [String] -> (Key, Value)
 getPair xs = ( key, value)        
         where key   = Key 
                        (read (xs !! 0) :: StructureType)
-                       (read (xs !! 1) :: Int)
-                       (read (xs !! 2) :: Int)
+                       (read (xs !! 1) :: NumOfWorker)
+                       (read (xs !! 2) :: BucketSize)
                        (read (xs !! 3) :: MoveType)
               value = Value 
-                       (read (xs !! 4) :: Double)
-                       (read (xs !! 5) :: Double)
-                       (read (xs !! 6) :: Double)
+                       (read (xs !! 4) :: QueryTime)
+                       (read (xs !! 5) :: MoveTime)
+                       (read (xs !! 6) :: RelocationTime)
 
 getJustValue :: Maybe a -> a
 getJustValue (Just x) = x                     
 
-stat :: (Ord a, Eq a) => [a] -> [a]
-stat arr = take len1 (L.reverse  (L.sort arrWB))
-        where len1 = length arr
+stat :: (Num a, Ord a, Fractional a) => [a] -> a 
+stat a = (sum arr) / (fromIntegral( length arr))
+       where arr = rmArr a
+
+rmArr :: (Ord a, Eq a) => [a] -> [a]
+rmArr arr = take (len2) (L.reverse  (L.sort arrWB))
+        where len1 = (length arr) - 1
+              len2 = len1 - 1
               arrWB = take len1 (L.sort arr)
