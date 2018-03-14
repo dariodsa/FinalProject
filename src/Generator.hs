@@ -1,6 +1,8 @@
 module Generator where
 
 import System.Random (randomRIO)
+import Control.Monad (foldM)
+import Data.Char (chr)
 
 data Dot = Dot {xCor :: Double,
                 yCor :: Double}
@@ -12,15 +14,24 @@ type FileName = String
 generateDots :: IO ()
 generateDots = do
               putStrLn "I will generate completly random 2-D dot (in geo coordinate style)."
-              putStrLn "Please enter the number of dots." 
+              putStrLn "Please enter the number of dots. * 100000" 
               newLine <- getLine
               numberOfDots <- getLine
               putStrLn $ "I will create " ++ show numberOfDots ++ " dots and save it to dots1.txt"
-              xs <- createDots (read numberOfDots :: Int)  (-90.0)   90.0
-              ys <- createDots (read numberOfDots :: Int) (-180.0)  180.0
+              let br = chr(read numberOfDots :: Int)
+              let xs = ['\0'..br]
+              putStrLn $ show $ length xs
+              rez <- foldM (\ac x -> addDots 1000) () xs
+              return rez
+--              return ()
+
+addDots :: Int -> IO ()
+addDots numberOfDots = do 
+              xs <- createDots numberOfDots  (-90.0)   90.0
+              ys <- createDots numberOfDots  (-180.0)  180.0
+              putStrLn $ show numberOfDots
               saveDots "dots1.txt" xs ys
               return ()
-
 
 createDots :: Int -> Double -> Double -> IO([Double])
 createDots  0    _   _ = return []
@@ -34,10 +45,9 @@ createDots num min max = do
 
 saveDots :: FileName -> [Double] -> [Double] -> IO ()
 saveDots filePath xs ys = do 
-                      writeFile filePath ""
+                      
                       dotsToString xs ys filePath
                       return ()
-
 
 dotsToString :: [Double] -> [Double] -> FileName -> IO ()
 dotsToString [] []  _ = return ()
