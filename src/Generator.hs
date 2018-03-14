@@ -3,6 +3,7 @@ module Generator where
 import System.Random (randomRIO)
 import Control.Monad (foldM)
 import Data.Char (chr)
+import Text.Printf
 
 data Dot = Dot {xCor :: Double,
                 yCor :: Double}
@@ -48,10 +49,12 @@ saveDots filePath xs ys = do
                       
                       dotsToString xs ys filePath
                       return ()
+roundIt :: Double -> String
+roundIt x = printf "%.5f" x :: String
 
 dotsToString :: [Double] -> [Double] -> FileName -> IO ()
 dotsToString [] []  _ = return ()
 dotsToString (x:xs) (y:ys) filePath = do 
-                          appendFile filePath (show x ++ "," ++ show y ++ "\n")
+                          appendFile filePath (roundIt x ++ "," ++ roundIt y ++ "\n")
                           dotsToString xs ys filePath
                           return ()

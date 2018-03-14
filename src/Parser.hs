@@ -90,7 +90,7 @@ stat a = (sum arr) / (fromIntegral( length arr))
        where arr = rmArr a
 
 rmArr :: (Ord a, Eq a) => [a] -> [a]
-rmArr arr = take (len2) (L.reverse  (L.sort arrWB))
+rmArr arr = L.take (len2) (L.reverse  (L.sort arrWB))
         where len1 = (length arr) - 1
               len2 = len1 - 1
-              arrWB = take len1 (L.sort arr)
+              arrWB = L.take len1 (L.sort arr)
