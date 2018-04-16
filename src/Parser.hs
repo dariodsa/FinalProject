@@ -91,6 +91,6 @@ stat a = (sum arr) / (fromIntegral( length arr))
 
 rmArr :: (Ord a, Eq a) => [a] -> [a]
 rmArr arr = L.take (len2) (L.reverse  (L.sort arrWB))
-        where len1 = (length arr) - 1
-              len2 = len1 - 1
+        where len1 = (length arr) - 3
+              len2 = len1 - 3
               arrWB = L.take len1 (L.sort arr)
