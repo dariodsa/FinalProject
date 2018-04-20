@@ -25,8 +25,8 @@ data Results = Results { querys :: [QueryTime]
 
 instance Show Key where 
   show (Key structureType bucketSize numOfWorkers moveType) = 
-             show structureType ++ ", " ++ show bucketSize ++ ", " ++ 
-             show numOfWorkers ++ ", " ++ show moveType
+             show structureType ++ " " ++ show bucketSize ++ " " ++ 
+             show numOfWorkers ++ " " ++ show moveType
 
 instance Show Value where
   show (Value x y z) = show x ++ " " ++ show y ++ " " ++ show z 
